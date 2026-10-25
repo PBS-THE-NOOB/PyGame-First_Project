@@ -13,6 +13,7 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+        menu.event_handeling(event)
     menu.draw(screen)
     pygame.display.update()
     clock.tick(60)
