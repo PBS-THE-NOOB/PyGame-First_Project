@@ -28,7 +28,7 @@ class MainMenu():
                 for i,(surf,rect) in enumerate(self.menu_terms):
                     if rect.collidepoint(event.pos):
                         if i == 0:
-                            pass
+                            return 'play'
                         elif i == 1:
                             pass
                         elif i == 2:
