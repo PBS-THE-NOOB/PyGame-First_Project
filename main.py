@@ -21,6 +21,8 @@ while True:
     if state == 'menu':
         menu.draw(screen)
     elif state == 'intro':
-        game.Entering_animation(screen)
+        state=game.Entering_animation(screen)
+    elif state == 'game_starts':
+        game.game_begin(screen)
     pygame.display.update()
     clock.tick(60)
