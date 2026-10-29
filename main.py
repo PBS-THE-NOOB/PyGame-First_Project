@@ -17,7 +17,7 @@ while True:
             exit()
         if state == 'menu':
             val = (menu.event_handeling(event))
-            if val == 'play': state = 'intro'
+            if val == 'play': state = 'game_starts'
     if state == 'menu':
         menu.draw(screen)
     elif state == 'intro':
