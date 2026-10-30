@@ -13,7 +13,7 @@ class Game():
         self.text_box_background = pygame.image.load('Background/Text_Box.png').convert()
         self.text_font=pygame.font.Font('Fonts/Menu_Font/MedievalSharp-Regular.ttf',30)
         self.Counter_Variable= 0
-
+        
     def Entering_animation(self,screen):
         self.Entering_Surf_Intex += 0.6
         if self.Entering_Surf_Intex>=len(self.Entering_surf_list):
@@ -28,7 +28,7 @@ class Game():
         Idle_player_rect = Idle_player.get_rect(bottomleft = (0,400))
         self.load_text_box(screen)
         screen.blit(Idle_player,Idle_player_rect)
-        self.typing_animation('This is the testing text',screen,(100,330))
+        self.typing_animation('Hello Player!',screen,(100,330))
     
     def load_text_box(self,screen):
         text_box_surf = pygame.transform.scale(self.text_box_background,(800,80))
@@ -36,13 +36,12 @@ class Game():
         screen.blit (text_box_surf,text_box_rect)
 
     def typing_animation(self,text:str, screen, top_left_location :tuple):
-        text_state = ''
-        if self.Counter_Variable > len(text) : self.Counter_Variable = len(text)  
-        else :
-            text_state = text[0:self.Counter_Variable]
-            self.Counter_Variable += 1
-        text_surf = self.text_font.render(f'{text_state}',0,'White')
-        text_rect = text_surf.get_rect(topleft = top_left_location)
-        screen.blit(text_surf,text_rect)
+            
+        text_state = text[0:int(self.Counter_Variable)]
+        text_surf = self.text_font.render(text_state, 0, 'White')
+        if text_surf.get_width() < 650 and self.Counter_Variable < len(text):
+            self.Counter_Variable += 0.2
+        text_rect = text_surf.get_rect(topleft=top_left_location)
+        screen.blit(text_surf, text_rect)
     
             
