@@ -15,14 +15,22 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+
         if state == 'menu':
             val = (menu.event_handeling(event))
             if val == 'play': state = 'intro'
+
+        elif state == 'game_starts':
+            game.game_event(event)
+            
     if state == 'menu':
         menu.draw(screen)
+
     elif state == 'intro':
         state=game.Entering_animation(screen)
+
     elif state == 'game_starts':
         game.game_begin(screen)
+
     pygame.display.update()
     clock.tick(60)
