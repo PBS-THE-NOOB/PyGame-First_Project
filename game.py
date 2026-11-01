@@ -36,7 +36,7 @@ class Game():
         Idle_player_rect = Idle_player.get_rect(bottomleft = (0,400))
         self.load_text_box(screen)
         screen.blit(Idle_player,Idle_player_rect)
-        self.typing_animation('Hello Player!',screen,(100,330))
+        self.typing_animation('Hello Player!                                                                                                      Hello Player!                                                     Hello Player',screen,(100,330))
         
     
     def load_text_box(self,screen):
