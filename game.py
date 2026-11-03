@@ -19,19 +19,20 @@ class Game():
         self.Current_event = ''
 
     def game_event(self,event):
-        if not(self.Dialogue_Finished):
-            if self.Dialogue_Filled_Screen : 
-                if event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or event.key == pygame.K_SPACE):
-                    self.temporary_counter = int(self.Counter_Variable)
-                    self.Dialogue_Filled_Screen = False
-        else : 
-            if event.type == pygame.KEYDOWN and (event.key in [pygame.K_RETURN , pygame.K_SPACE]) : 
-                if self.Current_event == '':
-                    self.Current_event = 'show_escape_textbox'
-                    self.Counter_Variable = 0 
-                elif self.Current_event == 'show_escape_textbox':
-                    pass
-            
+        if self.Current_event == 'Showing Animation' :
+            if not(self.Dialogue_Finished) :
+                if self.Dialogue_Filled_Screen : 
+                    if event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or event.key == pygame.K_SPACE):
+                        self.temporary_counter = int(self.Counter_Variable)
+                        self.Dialogue_Filled_Screen = False
+            else : 
+                if event.type == pygame.KEYDOWN and (event.key in [pygame.K_RETURN , pygame.K_SPACE]) : 
+                        self.Current_event = 'show_escape_textbox'
+                        
+        elif self.Current_event == 'show_escape_textbox' : 
+            pass
+                        
+                
     def get_text_surf_and_rect(self, text: str, topleft_location: tuple):
         text_surf = self.text_font.render(text, 0, 'White')
         text_rect = text_surf.get_rect(topleft=topleft_location)
@@ -40,7 +41,7 @@ class Game():
     def Entering_animation(self,screen):
         self.Entering_Surf_Intex += 0.6
         if self.Entering_Surf_Intex>=len(self.Entering_surf_list):
-            return 'game_starts'
+            return 'game_starts' #Future we gon add a checking system for if the game is firstly loaded or data is here 
         self.Entering_Surf = self.Entering_surf_list[int(self.Entering_Surf_Intex)]
         screen.blit(self.Entering_Surf,(0,0))
         return 'intro'
@@ -54,7 +55,7 @@ class Game():
         if self.Current_event == 'show_escape_textbox' : 
             text_surf, text_rect = self.get_text_surf_and_rect('Enter to continue',(120,330))
             screen.blit(text_surf,text_rect)
-        else : self.typing_animation('Hello Player!                                                                                                      Hello Player!                                                     Hello Player',screen,(100,330))
+        else : self.typing_animation('Hello Player!',screen,(100,330))
         
     
     def load_text_box(self,screen):
@@ -63,7 +64,7 @@ class Game():
         screen.blit (text_box_surf,text_box_rect)
 
     def typing_animation(self,text:str, screen, top_left_location :tuple):
-            
+        self.Current_event = 'Showing Animation'
         text_state = text[self.temporary_counter:int(self.Counter_Variable)]
         text_surf = self.text_font.render(text_state, 0, 'White')
         if text_surf.get_width() < 650 and self.Counter_Variable < len(text):
