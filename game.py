@@ -1,8 +1,8 @@
 import pygame
 from player import Player
+from dialogue_haldle import Dialogue
 
-
-
+dialogue =  Dialogue()
 class Game():
     def __init__(self):
         self.Entering_surf_list=[ pygame.transform.scale(pygame.image.load(f'Background/Entering_Background/frame{i:04}.png').convert(),(800,400)) for i in range(143)]
@@ -14,21 +14,30 @@ class Game():
         self.text_font=pygame.font.Font('Fonts/Menu_Font/MedievalSharp-Regular.ttf',30)
         self.Dialogue_Filled_Screen = False
         self.Dialogue_Finished = False
+        self.Sentence_Finished = False
         self.Counter_Variable= 0
         self.temporary_counter= 0
-        self.Current_event = ''
+        self.Current_event = 'Showing Animation'
+        self.intro_dialogue = dialogue.give_dialogue('intro')
 
     def game_event(self,event):
         if self.Current_event == 'Showing Animation' :
-            if not(self.Dialogue_Finished) :
-                if self.Dialogue_Filled_Screen : 
-                    if event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or event.key == pygame.K_SPACE):
-                        self.temporary_counter = int(self.Counter_Variable)
-                        self.Dialogue_Filled_Screen = False
-            else : 
-                if event.type == pygame.KEYDOWN and (event.key in [pygame.K_RETURN , pygame.K_SPACE]) : 
-                        self.Current_event = 'show_escape_textbox'
-                        
+            if event.type == pygame.KEYDOWN and event.key in [pygame.K_RETURN, pygame.K_SPACE]:
+
+                if self.Dialogue_Filled_Screen:
+                    self.temporary_counter = int(self.Counter_Variable)
+                    self.Dialogue_Filled_Screen = False
+
+                elif self.Sentence_Finished:
+                    self.Counter_Variable = 0
+                    self.temporary_counter = 0
+                    self.Sentence_Finished = False
+
+                    self.intro_dialogue = dialogue.give_dialogue('intro')
+
+                elif self.Dialogue_Finished:
+                    self.Current_event = 'show_escape_textbox'
+                
         elif self.Current_event == 'show_escape_textbox' : 
             pass
                         
@@ -55,7 +64,7 @@ class Game():
         if self.Current_event == 'show_escape_textbox' : 
             text_surf, text_rect = self.get_text_surf_and_rect('Enter to continue',(120,330))
             screen.blit(text_surf,text_rect)
-        else : self.typing_animation('Hello Player!',screen,(100,330))
+        else : self.typing_animation(self.intro_dialogue,screen,(100,330))
         
     
     def load_text_box(self,screen):
@@ -64,13 +73,15 @@ class Game():
         screen.blit (text_box_surf,text_box_rect)
 
     def typing_animation(self,text:str, screen, top_left_location :tuple):
-        self.Current_event = 'Showing Animation'
+        if not text : 
+            self.Dialogue_Finished = True
+            return
         text_state = text[self.temporary_counter:int(self.Counter_Variable)]
         text_surf = self.text_font.render(text_state, 0, 'White')
         if text_surf.get_width() < 650 and self.Counter_Variable < len(text):
             self.Counter_Variable += 0.2
         elif self.Counter_Variable >= len(text):
-            self.Dialogue_Finished = True
+            self.Sentence_Finished = True
         else :
             self.Dialogue_Filled_Screen = True
         text_rect = text_surf.get_rect(topleft=top_left_location)
