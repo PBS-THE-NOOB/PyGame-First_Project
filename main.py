@@ -1,14 +1,14 @@
 import pygame
 from sys import exit
 import mainmenu 
-import game
+from game import Game
 
 pygame.init()
 screen=pygame.display.set_mode((800,400))
 pygame.display.set_caption('Adventure Game')
 clock=pygame.time.Clock()
 menu=mainmenu.MainMenu()
-game = game.Game()
+game = Game(screen)
 state = 'game_starts'
 while True:
     for event in pygame.event.get():
@@ -27,10 +27,13 @@ while True:
         menu.draw(screen)
 
     elif state == 'intro':
-        state=game.Entering_animation(screen)
+        state = game.Entering_animation()
 
     elif state == 'game_starts':
-        game.game_begin(screen)
+        state = game.game_begin()
+
+    elif state == 'game_play' :
+        game.game_play()
 
     pygame.display.update()
     clock.tick(60)

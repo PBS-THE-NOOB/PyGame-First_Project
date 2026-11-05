@@ -1,15 +1,17 @@
 import pygame
 from player import Player
 from dialogue_haldle import Dialogue
+from world import World
 
 dialogue =  Dialogue()
 class Game():
-    def __init__(self):
+    def __init__(self,screen):
         self.Entering_surf_list=[ pygame.transform.scale(pygame.image.load(f'Background/Entering_Background/frame{i:04}.png').convert(),(800,400)) for i in range(143)]
         self.Entering_Surf_Intex=0
         self.Entering_Surf=self.Entering_surf_list[self.Entering_Surf_Intex]
         self.Game_Enter_Background=pygame.transform.scale(pygame.image.load('Background/Game_Enter_Background.png').convert(),(800,400))
         self.player=Player()
+        self.world = World()
         self.text_box_background = pygame.image.load('Background/Text_Box.png').convert()
         self.text_font=pygame.font.Font('Fonts/Menu_Font/MedievalSharp-Regular.ttf',30)
         self.Dialogue_Filled_Screen = False
@@ -19,6 +21,7 @@ class Game():
         self.temporary_counter= 0
         self.Current_event = 'Showing Animation'
         self.intro_dialogue = dialogue.give_dialogue('intro')
+        self.screen = screen
 
     def game_event(self,event):
         if self.Current_event == 'Showing Animation' :
@@ -39,7 +42,10 @@ class Game():
                     self.Current_event = 'show_escape_textbox'
                 
         elif self.Current_event == 'show_escape_textbox' : 
-            pass
+            if event.type == pygame.KEYDOWN and event.key in [pygame.K_RETURN, pygame.K_SPACE]:
+                self.Current_event = 'gameplay'
+
+        
                         
                 
     def get_text_surf_and_rect(self, text: str, topleft_location: tuple):
@@ -47,32 +53,33 @@ class Game():
         text_rect = text_surf.get_rect(topleft=topleft_location)
         return text_surf, text_rect
     
-    def Entering_animation(self,screen):
+    def Entering_animation(self):
         self.Entering_Surf_Intex += 0.6
         if self.Entering_Surf_Intex>=len(self.Entering_surf_list):
             return 'game_starts' #Future we gon add a checking system for if the game is firstly loaded or data is here 
         self.Entering_Surf = self.Entering_surf_list[int(self.Entering_Surf_Intex)]
-        screen.blit(self.Entering_Surf,(0,0))
+        self.screen.blit(self.Entering_Surf,(0,0))
         return 'intro'
 
-    def game_begin(self,screen):
-        screen.blit(self.Game_Enter_Background,(0,0))
-        Idle_player =  self.player.player_animate('idle')
-        Idle_player_rect = Idle_player.get_rect(bottomleft = (0,400))
-        self.load_text_box(screen)
-        screen.blit(Idle_player,Idle_player_rect)
-        if self.Current_event == 'show_escape_textbox' : 
-            text_surf, text_rect = self.get_text_surf_and_rect('Enter to continue',(120,330))
-            screen.blit(text_surf,text_rect)
-        else : self.typing_animation(self.intro_dialogue,screen,(100,330))
-        
+        def game_begin(self):
+            self.screen.blit(self.Game_Enter_Background,(0,0))
+            Idle_player =  self.player.player_animate('idle')
+            Idle_player_rect = Idle_player.get_rect(bottomleft = (0,400))
+            self.load_text_box()
+            self.screen.blit(Idle_player,Idle_player_rect)
+            if self.Current_event == 'show_escape_textbox' : 
+                text_surf, text_rect = self.get_text_surf_and_rect('Enter to continue',(120,330))
+                self.screen.blit(text_surf,text_rect)
+            else : self.typing_animation(self.intro_dialogue,(100,330))
+            if self.Current_event=='gameplay' : return 'game_play'
+            else : return 'game_starts'
     
-    def load_text_box(self,screen):
+    def load_text_box(self):
         text_box_surf = pygame.transform.scale(self.text_box_background,(800,80))
         text_box_rect = text_box_surf.get_rect(bottomleft = (0,390))
-        screen.blit (text_box_surf,text_box_rect)
+        self.screen.blit (text_box_surf,text_box_rect)
 
-    def typing_animation(self,text:str, screen, top_left_location :tuple):
+    def typing_animation(self,text:str, top_left_location :tuple):
         if not text : 
             self.Dialogue_Finished = True
             return
@@ -85,6 +92,7 @@ class Game():
         else :
             self.Dialogue_Filled_Screen = True
         text_rect = text_surf.get_rect(topleft=top_left_location)
-        screen.blit(text_surf, text_rect)
+        self.screen.blit(text_surf, text_rect)
     
-            
+    def game_play(self):
+        self.world.show_world(self.screen)
