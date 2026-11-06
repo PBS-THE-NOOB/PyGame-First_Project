@@ -42,7 +42,7 @@ class Game():
                     self.Current_event = 'show_escape_textbox'
                 
         elif self.Current_event == 'show_escape_textbox' : 
-            if event.type == pygame.KEYDOWN and event.key in [pygame.K_RETURN, pygame.K_SPACE]:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 self.Current_event = 'gameplay'
 
         
@@ -61,18 +61,18 @@ class Game():
         self.screen.blit(self.Entering_Surf,(0,0))
         return 'intro'
 
-        def game_begin(self):
-            self.screen.blit(self.Game_Enter_Background,(0,0))
-            Idle_player =  self.player.player_animate('idle')
-            Idle_player_rect = Idle_player.get_rect(bottomleft = (0,400))
-            self.load_text_box()
-            self.screen.blit(Idle_player,Idle_player_rect)
-            if self.Current_event == 'show_escape_textbox' : 
-                text_surf, text_rect = self.get_text_surf_and_rect('Enter to continue',(120,330))
-                self.screen.blit(text_surf,text_rect)
-            else : self.typing_animation(self.intro_dialogue,(100,330))
-            if self.Current_event=='gameplay' : return 'game_play'
-            else : return 'game_starts'
+    def game_begin(self):
+        self.screen.blit(self.Game_Enter_Background,(0,0))
+        Idle_player =  self.player.player_animate('idle')
+        Idle_player_rect = Idle_player.get_rect(bottomleft = (0,400))
+        self.load_text_box()
+        self.screen.blit(Idle_player,Idle_player_rect)
+        if self.Current_event == 'show_escape_textbox' : 
+             text_surf, text_rect = self.get_text_surf_and_rect('Enter to continue',(120,330))
+             self.screen.blit(text_surf,text_rect)
+        else : self.typing_animation(self.intro_dialogue,(100,330))
+        if self.Current_event=='gameplay' : return 'game_play'
+        else : return 'game_starts'
     
     def load_text_box(self):
         text_box_surf = pygame.transform.scale(self.text_box_background,(800,80))
@@ -96,3 +96,4 @@ class Game():
     
     def game_play(self):
         self.world.show_world(self.screen)
+
