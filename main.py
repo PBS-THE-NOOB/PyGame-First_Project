@@ -9,7 +9,7 @@ pygame.display.set_caption('Adventure Game')
 clock=pygame.time.Clock()
 menu=mainmenu.MainMenu()
 game = Game(screen)
-state = 'menu'
+state = 'game_play'
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
