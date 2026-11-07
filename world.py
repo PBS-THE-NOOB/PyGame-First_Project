@@ -75,7 +75,7 @@ class World():
                 self.layer_positions[layer][0] += rect.width
 
             rect.x = int(self.layer_positions[layer][0])
-            
+
             for i in range (-1,screen.get_width()//rect.width +2):
                 screen.blit(surf , (rect.x + rect.width * i ,rect.y))
         
@@ -89,7 +89,7 @@ class World():
 
         event =pygame.key.get_pressed()
         if event[pygame.K_a]:
-            return -1
+            return +1
         elif event[pygame.K_d]:
-            return 1
+            return -1
         return 0
