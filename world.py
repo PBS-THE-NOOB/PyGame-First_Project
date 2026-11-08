@@ -1,4 +1,5 @@
 import pygame
+import random
 
 GROUND_Y=400
 GROUND_WIDTH = 300
@@ -8,10 +9,9 @@ class World():
 
         self.background = pygame.transform.scale(pygame.image.load('Background/Game_Bg/BackGround.png').convert(),(800, 400))
 
-        self.Cloud_List = [pygame.image.load(f'Background/Game_Bg/Cloud/clouds_{i}.png').convert_alpha() for i in range(1,5)]
-
-        self.cloud_surf = self.Cloud_List[0]
-        # self.cloud_rect = self.cloud.get_rect()
+        self.Cloud_List = [self.scale(pygame.image.load(f'Background/Game_Bg/Cloud/clouds_{i}.png').convert_alpha(),100) for i in range(1,5)]
+        self.current_cloud = random.choice(self.Cloud_List)
+        self.current_cloud_rect = self.current_cloud.get_rect(topleft = (0,0))
 
         self.mountain = pygame.transform.scale(pygame.image.load('Background/Game_Bg/mountain.png').convert_alpha(),(800,400))
         self.mountain_rect = self.mountain.get_rect(bottomleft = (0,400))
@@ -28,11 +28,8 @@ class World():
         self.ground = pygame.transform.scale(pygame.image.load('Background/Game_Bg/Ground.png').convert_alpha(),(800,GROUND_WIDTH))
         self.ground_rect = self.ground.get_rect(bottomleft = (0,GROUND_Y))
 
-        self.fore_ground = pygame.image.load('Background/Game_Bg/ForeGround.png').convert_alpha()
-        self.fore_ground_rect = self.fore_ground.get_rect()
-
-        self.front_bushes = pygame.image.load('Background/Game_Bg/FrontBushes.png').convert_alpha()
-        self.front_bushes_rect = self.front_bushes.get_rect()
+        self.front_bushes = self.scale(pygame.image.load('Background/Game_Bg/FrontBushes.png').convert_alpha(),200)
+        self.front_bushes_rect = self.front_bushes.get_rect(bottomleft = (0,GROUND_Y))
 
         self.layer_positions = {
             #name : [x coordinate , movement speed]
@@ -42,8 +39,8 @@ class World():
             'middle_trees': [0.0, 0.8],
             'near_trees': [0.0, 1.2],
             'ground': [0.0, 1.5],
-            'fore_ground': [0.0, 2.0],
-            'front_bushes': [0.0, 2.5]
+            'fore_ground': [0.0, 1.6],
+            'front_bushes': [0.0, 1.2]
             }
         
         self.background_x = 0
@@ -51,22 +48,15 @@ class World():
     def show_world(self,screen):
         screen.blit(self.background,(self.background_x,0))
         direction = self.handel_movement_inputs()
-        self.movement(self.mountain,self.mountain_rect,screen,'mountain',False,direction)
-        self.movement(self.far_trees,self.far_trees_rect,screen,'far_trees',False,direction)
-        self.movement(self.middle_trees,self.middle_trees_rect,screen,'middle_trees',False,direction)
-        self.movement(self.near_trees,self.near_trees_rect,screen,'near_trees',False,direction)
-        # self.movement(self.front_bushes,self.front_bushes_rect,screen,'ground',False,direction)
-        self.movement(self.ground,self.ground_rect,screen,'ground',False,direction)
-        # self.movement(self.fore_ground,self.fore_ground_rect,screen,'ground',False,direction)
+        self.discontinuos_movement(self.mountain,self.mountain_rect,screen,'mountain',direction)
+        self.cloud_movement(screen)
+        self.discontinuos_movement(self.far_trees,self.far_trees_rect,screen,'far_trees',direction)
+        self.discontinuos_movement(self.middle_trees,self.middle_trees_rect,screen,'middle_trees',direction)
+        self.discontinuos_movement(self.near_trees,self.near_trees_rect,screen,'near_trees',direction)
+        self.discontinuos_movement(self.front_bushes,self.front_bushes_rect,screen,'front_bushes',direction)
+        self.discontinuos_movement(self.ground,self.ground_rect,screen,'ground',direction)
 
-
-    def movement(self,surf,rect,screen,layer : str, continuous : bool ,direction = 0) :
-        if continuous : 
-            # self.layer_positions[layer][0] += self.layer_positions[layer][1]
-            # if self.layer_positions[layer][0] > 900 : 
-            #     self.layer_positions[layer][0] = -rect.width
-            pass
-        else : 
+    def discontinuos_movement(self,surf,rect,screen,layer : str,direction = 0) :
             self.layer_positions[layer][0] += (self.layer_positions[layer][1]) * direction
 
             if self.layer_positions[layer][0] >= rect.width :
@@ -78,7 +68,17 @@ class World():
 
             for i in range (-1,screen.get_width()//rect.width +2):
                 screen.blit(surf , (rect.x + rect.width * i ,rect.y))
-        
+
+    def cloud_movement(self,screen):
+        if self.current_cloud_rect.left > screen.get_width()+100 : 
+            self.current_cloud = random.choice(self.Cloud_List)
+            self.current_cloud_rect = self.current_cloud.get_rect(topleft = (0,0))
+            self.current_cloud_rect.left= -self.current_cloud_rect.width
+        else  : self.current_cloud_rect.x += 0.5
+        screen.blit(self.current_cloud,self.current_cloud_rect)
+
+
+
 
     def scale(self, image, height):
         original_width, original_height = image.get_size()
