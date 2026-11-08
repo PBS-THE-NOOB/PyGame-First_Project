@@ -45,16 +45,18 @@ class World():
         
         self.background_x = 0
 
-    def show_world(self,screen):
-        screen.blit(self.background,(self.background_x,0))
+    def show_world(self,screen,half:str):
         direction = self.handel_movement_inputs()
-        self.discontinuos_movement(self.mountain,self.mountain_rect,screen,'mountain',direction)
-        self.cloud_movement(screen)
-        self.discontinuos_movement(self.far_trees,self.far_trees_rect,screen,'far_trees',direction)
-        self.discontinuos_movement(self.middle_trees,self.middle_trees_rect,screen,'middle_trees',direction)
-        self.discontinuos_movement(self.near_trees,self.near_trees_rect,screen,'near_trees',direction)
-        self.discontinuos_movement(self.front_bushes,self.front_bushes_rect,screen,'front_bushes',direction)
-        self.discontinuos_movement(self.ground,self.ground_rect,screen,'ground',direction)
+        if half == 'first' :
+            screen.blit(self.background,(self.background_x,0))
+            self.discontinuos_movement(self.mountain,self.mountain_rect,screen,'mountain',direction)
+            self.cloud_movement(screen)
+            self.discontinuos_movement(self.far_trees,self.far_trees_rect,screen,'far_trees',direction)
+            self.discontinuos_movement(self.middle_trees,self.middle_trees_rect,screen,'middle_trees',direction)
+            self.discontinuos_movement(self.near_trees,self.near_trees_rect,screen,'near_trees',direction)
+            self.discontinuos_movement(self.front_bushes,self.front_bushes_rect,screen,'front_bushes',direction)
+        elif half == 'second' :
+            self.discontinuos_movement(self.ground,self.ground_rect,screen,'ground',direction)
 
     def discontinuos_movement(self,surf,rect,screen,layer : str,direction = 0) :
             self.layer_positions[layer][0] += (self.layer_positions[layer][1]) * direction

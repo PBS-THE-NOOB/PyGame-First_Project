@@ -95,5 +95,7 @@ class Game():
         self.screen.blit(text_surf, text_rect)
     
     def game_play(self):
-        self.world.show_world(self.screen)
+        self.world.show_world(self.screen,'first')
+        self.player.render_player(self.screen,50,372)
+        self.world.show_world(self.screen,'second')
 
