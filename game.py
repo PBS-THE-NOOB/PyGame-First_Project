@@ -96,6 +96,5 @@ class Game():
     
     def game_play(self):
         self.world.show_world(self.screen,'first')
-        self.player.render_player(self.screen,50,372)
         self.world.show_world(self.screen,'second')
 

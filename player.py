@@ -45,9 +45,9 @@ class Player(pygame.sprite.Sprite):
         else:
             self.state = 'idle'
     
-    def render_player(self,screen,x,y):
+    def render_player(self,x,y):
         self.check_state()
         player_surf = self.player_animate(self.state)
         player_rect = player_surf.get_rect(bottomleft = (x,y))
-        screen.blit(player_surf,player_rect)
+        return player_surf,player_rect
 
