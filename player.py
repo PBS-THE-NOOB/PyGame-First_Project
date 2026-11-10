@@ -1,7 +1,7 @@
 import pygame
 
 PLAYER_WIDTH = 96
-PLAYER_HEIGHT = 128
+PLAYER_HEIGHT = 100
 
 class Player(pygame.sprite.Sprite):
     def __init__(self,):
@@ -24,7 +24,11 @@ class Player(pygame.sprite.Sprite):
         }
         self.animaion_index = 0
         self.state =  'idle'
-        self.gravity = -10
+        self.jump_velocity = -4
+        self.gravity = 0.8
+        self.player_x = -100
+        self.player_y = 1000
+        self.grounded = True
 
     def player_animate(self,player_state : str): #returns frames 
         self.animaion_index += 0.1
@@ -46,8 +50,26 @@ class Player(pygame.sprite.Sprite):
             self.state = 'idle'
     
     def render_player(self,x,y):
+        self.player_x = x
         self.check_state()
+        self.player_jump(y) 
         player_surf = self.player_animate(self.state)
-        player_rect = player_surf.get_rect(bottomleft = (x,y))
+        player_rect = player_surf.get_rect(midbottom = (self.player_x,self.player_y))
         return player_surf,player_rect
 
+    def player_jump(self,y_input : int):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE] and self.grounded:
+            self.jump_velocity = -20
+            self.grounded = False
+
+        if not self.grounded:
+            self.jump_velocity += self.gravity
+            self.player_y += self.jump_velocity
+            
+        if self.player_y >= y_input :
+            self.player_y = y_input
+            self.grounded = True
+
+
+        return self.player_y
